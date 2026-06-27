@@ -1,5 +1,5 @@
 """
-Programme pour nettoyer un fichier de paires (français/kabyle).
+Programme pour nettoyer un fichier de paires (français/Tamazight).
 Garde uniquement les lignes qui contiennent un tab (séparateur valide).
 
 Usage:

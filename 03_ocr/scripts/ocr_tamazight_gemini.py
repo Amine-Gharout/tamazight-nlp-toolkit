@@ -1,9 +1,9 @@
 """
-Batch OCR of Kabyle documents using Gemini.
+Batch OCR of Tamazight/Kabyle documents using Gemini.
 
 Usage:
     export GEMINI_API_KEY='your-key-here'
-    python scripts/ocr_kabyle_gemini.py -i doc -o outputs/gemini
+    python scripts/ocr_tamazight_gemini.py -i doc -o outputs/gemini
 """
 
 from shared.gemini_utils import GeminiProcessor
@@ -15,11 +15,11 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 
-# ─── Kabyle OCR System Prompt ───
+# ─── Tamazight/Kabyle OCR System Prompt ───
 SYSTEM_PROMPT = r"""
-You are an expert OCR system specialized in Kabyle (Amazigh/Berber) language text extraction. Extract ALL text from this image with maximum accuracy, preserving the original layout and structure.
+You are an expert OCR system specialized in Tamazight/Kabyle (Amazigh/Berber) language text extraction. Extract ALL text from this image with maximum accuracy, preserving the original layout and structure.
 
-CRITICAL: Kabyle uses special diacritical characters that MUST be preserved exactly:
+CRITICAL: Tamazight uses special diacritical characters that MUST be preserved exactly:
 - Consonants with underdots: ḍ ṛ ṣ ṭ ẓ
 - Consonants with other marks: ḥ ɛ ɣ č ǧ
 - Digraphs: ch, kh, gh, gw, kw
@@ -43,7 +43,7 @@ Extract the text now:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Batch OCR of Kabyle documents using Gemini")
+        description="Batch OCR of Tamazight/Kabyle documents using Gemini")
     parser.add_argument("--input-dir", "-i", default="doc",
                         help="Directory containing images to OCR (default: doc)")
     parser.add_argument("--output-dir", "-o", default="outputs/gemini",
@@ -59,7 +59,7 @@ def main():
 
     processor = GeminiProcessor(model_name=args.model)
 
-    print(f"📄 OCR Pipeline — Kabyle Document Digitization")
+    print(f"📄 OCR Pipeline — Tamazight/Kabyle Document Digitization")
     print(f"   Input:  {args.input_dir}")
     print(f"   Output: {args.output_dir}")
     print(f"   Model:  {args.model}")

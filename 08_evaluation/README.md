@@ -6,13 +6,13 @@ Benchmarking translation quality using FLORES+ devtest and chrF++ metrics.
 
 | File | Description |
 |------|-------------|
-| `benchmarks/nllb_benchmark_flores.ipynb` | Evaluates NLLB translation on FLORES+ French→Kabyle test set |
+| `benchmarks/nllb_benchmark_flores.ipynb` | Evaluates NLLB translation on FLORES+ French→Tamazight/Kabyle test set |
 | `benchmarks/get_least.ipynb` | Analyzes worst-performing translations for error patterns |
 
 ## Metric
 
-**chrF++** — Character n-gram F-score with word order. Preferred over BLEU for morphologically rich languages like Kabyle, as it captures partial morphological matches.
+**chrF++** — Character n-gram F-score with word order. Preferred over BLEU for morphologically rich languages like Tamazight/Kabyle, as it captures partial morphological matches.
 
 ## Data
 
-FLORES+ devtest: ~1,000 parallel French–Kabyle sentences used as reference translations.
+FLORES+ devtest: ~1,000 parallel French–Tamazight/Kabyle sentences used as reference translations.

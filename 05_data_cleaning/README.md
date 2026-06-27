@@ -1,6 +1,6 @@
 # 05 — Data Cleaning
 
-Cleaning and curating parallel corpora for Kabyle NLP tasks.
+Cleaning and curating parallel corpora for Tamazight/Kabyle NLP tasks.
 
 ## Contents
 
@@ -9,7 +9,7 @@ Cleaning and curating parallel corpora for Kabyle NLP tasks.
 | `cleaners/clean_tab_pairs.py` | Removes malformed tab-separated pairs |
 | `cleaners/remove_single_sentences.py` | Filters out unpaired/isolated sentences |
 | `cleaners/replace_tabs.py` | Normalizes tab/whitespace formatting |
-| `cleaners/rm_fr_en_rows.ipynb` | Removes French/English rows from Kabyle data |
+| `cleaners/rm_fr_en_rows.ipynb` | Removes French/English rows from Tamazight/Kabyle data |
 | `cleaners/size_sentence.ipynb` | Filters sentences by length constraints |
 
 ## Purpose

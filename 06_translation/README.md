@@ -1,6 +1,6 @@
 # 06 — Machine Translation
 
-Kabyle translation using Meta's NLLB-200 (No Language Left Behind) with CTranslate2 for efficient inference.
+Tamazight/Kabyle translation using Meta's NLLB-200 (No Language Left Behind) with CTranslate2 for efficient inference.
 
 ## Contents
 
@@ -12,12 +12,12 @@ outputs/     → Generated translations
 
 | File | Description |
 |------|-------------|
-| `notebooks/translate_src_to_pivot.ipynb` | Translates English→Kabyle and French→Kabyle via NLLB |
+| `notebooks/translate_src_to_pivot.ipynb` | Translates English→Tamazight/Kabyle and French→Tamazight/Kabyle via NLLB |
 | `notebooks/inference/nllb_ctranslate2_inference.ipynb` | Low-VRAM inference with CTranslate2 quantization |
 
 ## Method
 
-Uses English/French as pivot languages → NLLB-200-3.3B → Kabyle. CTranslate2 provides int8/float16 quantization for running on limited GPU memory (3.5–6.5 GB).
+Uses English/French as pivot languages → NLLB-200-3.3B → Tamazight/Kabyle. CTranslate2 provides int8/float16 quantization for running on limited GPU memory (3.5–6.5 GB).
 
 ## Download & Install the NLLB Model
 
@@ -71,7 +71,7 @@ CT2_MODEL_PATH = "06_translation/models/nllb-200-3.3B-ct2"
 
 translator = ctranslate2.Translator(str(CT2_MODEL_PATH), device="cuda")
 
-# Translate: English → Kabyle (kab_Latn)
+# Translate: English → Tamazight/Kabyle (kab_Latn)
 output = translator.translate_batch(
     [["Hello, how are you?"]],
     target_prefix=[["kab_Latn"]],

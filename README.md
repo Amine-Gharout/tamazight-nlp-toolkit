@@ -1,6 +1,6 @@
 # Low Resource Language Toolkit 🌍
 
-This repository contains reusable tools, notebooks, and pipelines designed for NLP research involving Low-Resource Languages (LRLs). Originally formulated for Kabyle, the structural pipelines herein (OCR, translation, Retrieval-Augmented Translation) can be seamlessly adapted to any low-resource language pairs with minimal modifications. 
+This repository contains reusable tools, notebooks, and pipelines designed for NLP research involving Low-Resource Languages (LRLs). Originally formulated for Tamazight/Kabyle, the structural pipelines herein (OCR, translation, Retrieval-Augmented Translation) can be seamlessly adapted to any low-resource language pairs with minimal modifications. 
 
 ## Project Structure
 
@@ -53,7 +53,7 @@ This toolkit leverages several state-of-the-art technologies to achieve high-qua
 Copy `.env.example` to `.env` and configure your necessary API keys before running the notebooks (OCR, RAT pipelines).
 
 ## Adapting to Your Target Language
-Throughout the codebase, variables frequently list paths to `kab` (Kabyle) or `fra` (French) pairs. You can replace the ISO codes arrays across scripts (like `LANG_CODES`) and change dataset paths matching your specified source/target parallel corpora.
+Throughout the codebase, variables frequently list paths to `kab` (Tamazight/Kabyle) or `fra` (French) pairs. You can replace the ISO codes arrays across scripts (like `LANG_CODES`) and change dataset paths matching your specified source/target parallel corpora.
 
 ## Usage
 
@@ -73,7 +73,7 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 
 ## Acknowledgements
 
-This work was completed during a research internship at the **CEDRIC Laboratory** at **Le Cnam (Conservatoire National des Arts et Métiers) de Paris**, focusing on the preservation and digitization of Low-Resource Languages, starting with the Kabyle language. Special thanks to the open-source community for tools like NLLB, CTranslate2, and LangChain that made this pipeline possible.
+This work was completed during a research internship at the **CEDRIC Laboratory** at **Le Cnam (Conservatoire National des Arts et Métiers) de Paris**, focusing on the preservation and digitization of Low-Resource Languages, starting with the Tamazight/Kabyle language. Special thanks to the open-source community for tools like NLLB, CTranslate2, and LangChain that made this pipeline possible.
 
 ## License
 

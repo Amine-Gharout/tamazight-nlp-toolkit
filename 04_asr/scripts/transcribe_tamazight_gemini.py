@@ -1,9 +1,9 @@
 """
-Batch transcription of Kabyle audio using Gemini.
+Batch transcription of Tamazight/Kabyle audio using Gemini.
 
 Usage:
     export GEMINI_API_KEY='your-key-here'
-    python scripts/transcribe_kabyle_gemini.py -i audio -o outputs
+    python scripts/transcribe_tamazight_gemini.py -i audio -o outputs
 """
 
 from shared.gemini_utils import GeminiProcessor
@@ -15,11 +15,11 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 
-# ─── Kabyle ASR System Prompt ───
+# ─── Tamazight/Kabyle ASR System Prompt ───
 SYSTEM_PROMPT = r"""
-You are an expert transcription system specialized in Kabyle (Amazigh/Berber) language audio transcription. Transcribe ALL speech from this audio file with maximum accuracy, preserving the natural flow and structure.
+You are an expert transcription system specialized in Tamazight/Kabyle (Amazigh/Berber) language audio transcription. Transcribe ALL speech from this audio file with maximum accuracy, preserving the natural flow and structure.
 
-CRITICAL: Kabyle uses special diacritical characters that MUST be preserved exactly:
+CRITICAL: Tamazight uses special diacritical characters that MUST be preserved exactly:
 - Consonants with underdots: ḍ ṛ ṣ ṭ ẓ
 - Consonants with other marks: ḥ ɛ ɣ č ǧ
 - Digraphs: ch, kh, gh, gw, kw
@@ -44,7 +44,7 @@ Transcribe the audio now:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Batch transcription of Kabyle audio using Gemini")
+        description="Batch transcription of Tamazight/Kabyle audio using Gemini")
     parser.add_argument("--input-dir", "-i", default="audio",
                         help="Directory containing audio files to transcribe (default: audio)")
     parser.add_argument("--output-dir", "-o", default="outputs",
@@ -59,7 +59,7 @@ def main():
 
     processor = GeminiProcessor(model_name=args.model)
 
-    print(f"🎧 ASR Pipeline — Kabyle Audio Transcription")
+    print(f"🎧 ASR Pipeline — Tamazight/Kabyle Audio Transcription")
     print(f"   Input:  {args.input_dir}")
     print(f"   Output: {args.output_dir}")
     print(f"   Model:  {args.model}")

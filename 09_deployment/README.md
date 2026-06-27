@@ -1,6 +1,6 @@
 # 09 — Deployment
 
-Azure cloud infrastructure for continuous Kabyle radio recording and storage.
+Azure cloud infrastructure for continuous Tamazight/Kabyle radio recording and storage.
 
 ## Contents
 
