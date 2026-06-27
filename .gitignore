@@ -1,0 +1,67 @@
+# Large files — downloaded via scripts/
+0_data/raw_data.tar.gz
+app_logs.zip
+06_translation/models/nllb-200-3.3B-ct2/model.bin
+06_translation/models/nllb-200-3.3B-ct2/.cache/
+
+# Environment and Virtual Environments
+.env
+.env.local
+.env.*.local
+.venv/
+venv/
+env/
+ENV/
+RAT/env/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+*.dist-info/
+build/
+dist/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IDE and Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.tox/
+*.coverage
+.coverage.*
+htmlcov/
+
+# Index and Cache Files
+faiss_index.bin
+*.index
+*.cache
+
+# Output/Generated Data
+OCR/gemmini output/
+OCR/qwen output/
+OCR/gemmini ocr+ corr/
+1_ocr/outputs/
+
+# Large Models (downloaded via script)
+3_translation/models/
+
+# Large Raw Data (managed by DVC)
+0_data/raw/
+
+# DVC
+.dvc/cache/
+.dvc/tmp/
