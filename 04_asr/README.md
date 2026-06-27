@@ -11,7 +11,7 @@ notebooks/   → Interactive notebooks for live/recorded transcription
 
 | File | Description |
 |------|-------------|
-| `scripts/transcribe_kabyle_gemini.py` | Batch transcription of Kabyle audio via Gemini 2.5 Pro |
+| `scripts/transcribe_kabyle_gemini.py` | Batch transcription of Kabyle audio via Gemini 2.5 Pro (uses `shared/gemini_utils.py`) |
 | `notebooks/live_radio_transcription.ipynb` | Real-time transcription of Radio Chaine 2 with API key rotation |
 
 ## Method

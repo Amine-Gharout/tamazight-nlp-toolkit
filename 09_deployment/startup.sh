@@ -1,27 +1,32 @@
 #!/bin/bash
-# Azure Web App Startup Script for Radio Recording Service
+# Azure VM Startup Script for Radio Recording Service
+# Runs on boot: records Radio Chaine 2 and uploads to Azure Blob Storage
 
 echo "=========================================="
-echo "🚀 Starting Radio Recording Service"
+echo " Starting Radio Recording Service"
 echo "=========================================="
 
 # Verify Python
-echo "🐍 Python version: $(python --version)"
+echo "Python version: $(python --version)"
 
 # Install Python dependencies
-echo "📚 Installing Python packages..."
+echo "Installing Python packages..."
 pip install --upgrade pip
-pip install -r requirements_webapp.txt
+pip install azure-storage-blob imageio-ffmpeg
 
-# Set environment variables (these should be configured in Azure Portal)
-# AZURE_STORAGE_CONNECTION_STRING should be set in Azure App Configuration
+# Environment variables (set these in Azure Portal → VM → Environment)
+# AZURE_STORAGE_CONNECTION_STRING — required for Blob Storage upload
+# CONTAINER_NAME — defaults to "recordings"
 
-# Run the radio recording service with Flask
-echo "🎙️  Starting radio recording service..."
+if [ -z "$AZURE_STORAGE_CONNECTION_STRING" ]; then
+    echo "WARNING: AZURE_STORAGE_CONNECTION_STRING is not set."
+    echo "Set it in Azure Portal or add to /etc/environment"
+fi
+
+echo "Starting radio recorder..."
 echo "=========================================="
 
-# Run with unbuffered output and use gunicorn for production
-echo "Starting Flask application..."
-python -u azure_radio_app.py
+cd "$(dirname "$0")"
+python -u radio_recorder_azure_vm.py
 
-echo "⏹️  Service stopped"
+echo "Service stopped"

@@ -1,25 +1,29 @@
 """
 Programme pour nettoyer un fichier de paires (français/kabyle).
 Garde uniquement les lignes qui contiennent un tab (séparateur valide).
+
+Usage:
+    python cleaners/clean_tab_pairs.py --input fra_kab_pairs.txt --output clean_fra_kab_pairs.txt
+    python cleaners/clean_tab_pairs.py --input fra_kab_pairs.txt --in-place
 """
 
-# ============================================
-# CONFIGURATION
-# ============================================
-INPUT_FILE = "fra_kab_pairs.txt"
-OUTPUT_FILE = "clean_fra_kab_pairs.txt"
-# ============================================
+import argparse
+import os
 
 
-def clean_tab_pairs(input_file: str, output_file: str):
+def clean_tab_pairs(input_file: str, output_file: str | None = None, in_place: bool = False):
     """
-    Garde uniquement les lignes contenant un tab (séparateur valide).
-    Les lignes sans tab sont considérées comme corrompues/mal formées.
+    Keep only lines containing a tab (valid separator).
 
     Args:
-        input_file: Fichier d'entrée
-        output_file: Fichier de sortie nettoyé
+        input_file: Input file path.
+        output_file: Output file path (ignored if in_place=True).
+        in_place: If True, overwrite input file directly.
     """
+    if not os.path.exists(input_file):
+        print(f" File not found: {input_file}")
+        return
+
     total_lines = 0
     kept_lines = 0
     removed_lines = 0
@@ -27,46 +31,58 @@ def clean_tab_pairs(input_file: str, output_file: str):
     valid_lines = []
     invalid_lines = []
 
-    print(f"📂 Lecture du fichier: {input_file}")
+    print(f" Reading: {input_file}")
 
     with open(input_file, 'r', encoding='utf-8') as f:
         for line in f:
             total_lines += 1
-
-            # Vérifier si la ligne contient un tab (séparateur valide)
             if '\t' in line:
                 valid_lines.append(line)
                 kept_lines += 1
             else:
                 removed_lines += 1
-                # Garder trace des lignes invalides pour inspection
-                if line.strip():  # Ignorer les lignes vides
+                if line.strip():
                     invalid_lines.append((total_lines, line.strip()[:80]))
 
-    # Sauvegarder les lignes valides
-    print(f"\n💾 Sauvegarde vers: {output_file}")
+    if in_place:
+        output_file = input_file
+    elif output_file is None:
+        stem, ext = os.path.splitext(input_file)
+        output_file = f"{stem}_clean{ext}"
+
     with open(output_file, 'w', encoding='utf-8') as f:
         f.writelines(valid_lines)
 
-    # Afficher le résumé
     print(f"\n{'='*60}")
-    print(f"RÉSUMÉ DU NETTOYAGE")
+    print("CLEANUP SUMMARY")
     print(f"{'='*60}")
-    print(f"   Lignes totales:     {total_lines:,}")
-    print(f"   Lignes gardées:     {kept_lines:,} (avec tab)")
-    print(f"   Lignes supprimées:  {removed_lines:,} (sans tab)")
+    print(f"   Total lines:     {total_lines:,}")
+    print(f"   Kept (with tab): {kept_lines:,}")
+    print(f"   Removed (no tab): {removed_lines:,}")
+    print(f"   Output: {output_file}")
     print(f"{'='*60}")
 
-    # Afficher quelques lignes invalides pour inspection
     if invalid_lines:
-        print(f"\n⚠️ Exemples de lignes supprimées (max 10):")
-        for line_num, content in invalid_lines[:10]:
-            print(f"   Ligne {line_num}: '{content}...'")
+        print(f"\n Sample removed lines (max 5):")
+        for line_num, content in invalid_lines[:5]:
+            print(f"   Line {line_num}: '{content}...'")
 
-    print(f"\n✅ Fichier nettoyé sauvegardé: {output_file}")
+    print(f"\n Done: {output_file}")
 
-    return kept_lines, removed_lines
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Clean parallel corpus files by keeping only tab-separated lines")
+    parser.add_argument("--input", "-i", required=True,
+                        help="Input parallel corpus file")
+    parser.add_argument("--output", "-o",
+                        help="Output file path (default: input_clean.ext)")
+    parser.add_argument("--in-place", action="store_true",
+                        help="Overwrite input file directly")
+    args = parser.parse_args()
+
+    clean_tab_pairs(args.input, args.output, args.in_place)
 
 
 if __name__ == "__main__":
-    clean_tab_pairs(INPUT_FILE, OUTPUT_FILE)
+    main()

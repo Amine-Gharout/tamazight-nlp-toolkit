@@ -1,34 +1,22 @@
-import google.generativeai as genai
+"""
+Batch OCR of Kabyle documents using Gemini.
+
+Usage:
+    export GEMINI_API_KEY='your-key-here'
+    python scripts/ocr_kabyle_gemini.py -i doc -o outputs/gemini
+"""
+
+from shared.gemini_utils import GeminiProcessor
+import argparse
+import sys
 import os
-from google.generativeai.types import HarmCategory, HarmBlockThreshold
-import pathlib
 
-# Configure API key via environment variable (no error handling by request)
-genai.configure(api_key="AIzaSyDwhvG47lCNoHwpGDBEto3w3yuuO8dlWzc")
+# Add project root to path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 
-# Appliquer les paramètres de sécurité lors de l'instanciation du modèle
-model = genai.GenerativeModel(
-    'gemini-2.5-pro',
-)
-
-des = 'doc'
-
-i = 1
-k = len(os.listdir(des))
-
-
-for file in os.listdir(des):
-
-    print(fr'début: {file}')
-
-    # Path to your LOCAL image file
-    filepath = pathlib.Path(fr'{os.path.join(des, file)}')
-
-    # Upload the image file
-    uploaded_file = genai.upload_file(filepath)
-
-    SYSTEM_PROMPT = r"""
+# ─── Kabyle OCR System Prompt ───
+SYSTEM_PROMPT = r"""
 You are an expert OCR system specialized in Kabyle (Amazigh/Berber) language text extraction. Extract ALL text from this image with maximum accuracy, preserving the original layout and structure.
 
 CRITICAL: Kabyle uses special diacritical characters that MUST be preserved exactly:
@@ -51,18 +39,39 @@ Output requirements:
 
 Extract the text now:
 """
-#   gemini-2.5-pro
-#   gemini-2.5-flash
-    response = model.generate_content([
-        SYSTEM_PROMPT,
-        uploaded_file,
-    ])
-    with open(f"{file[:-4]}.md", 'w', encoding='utf-8') as fil:
-        fil.write(f'{response.text}\n')
-
-    print(fr'fin: {file}, {i}/{k}')
-
-    i += 1
 
 
-print('finnn')
+def main():
+    parser = argparse.ArgumentParser(
+        description="Batch OCR of Kabyle documents using Gemini")
+    parser.add_argument("--input-dir", "-i", default="doc",
+                        help="Directory containing images to OCR (default: doc)")
+    parser.add_argument("--output-dir", "-o", default="outputs/gemini",
+                        help="Directory to save OCR results (default: outputs/gemini)")
+    parser.add_argument("--model", "-m", default="gemini-2.5-pro",
+                        choices=["gemini-2.5-pro", "gemini-2.5-flash"],
+                        help="Gemini model version (default: gemini-2.5-pro)")
+    parser.add_argument("--extensions", "-e", nargs="+",
+                        default=[".png", ".jpg", ".jpeg",
+                                 ".webp", ".bmp", ".tiff"],
+                        help="File extensions to process (default: .png .jpg .jpeg .webp .bmp .tiff)")
+    args = parser.parse_args()
+
+    processor = GeminiProcessor(model_name=args.model)
+
+    print(f"📄 OCR Pipeline — Kabyle Document Digitization")
+    print(f"   Input:  {args.input_dir}")
+    print(f"   Output: {args.output_dir}")
+    print(f"   Model:  {args.model}")
+    print()
+
+    processor.process_directory(
+        input_dir=args.input_dir,
+        output_dir=args.output_dir,
+        system_prompt=SYSTEM_PROMPT,
+        extensions=tuple(ext.lower() for ext in args.extensions),
+    )
+
+
+if __name__ == "__main__":
+    main()

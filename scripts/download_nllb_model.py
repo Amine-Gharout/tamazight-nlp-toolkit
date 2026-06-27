@@ -3,8 +3,8 @@
 Download NLLB-200-3.3B CTranslate2 Model from HuggingFace
 
 Usage:
-    python scripts/download_nllb_model.py                # float16 (~6.5 GB)
-    python scripts/download_nllb_model.py --quant int8   # int8 (~3.5 GB, less VRAM)
+    python scripts/download_nllb_model.py                        # float16 (~6.5 GB)
+    python scripts/download_nllb_model.py --quant int8_float16   # int8 (~3.5 GB, less VRAM)
 
 This downloads a pre-converted CTranslate2 model for fast low-VRAM inference.
 After downloading, the model is placed at: 06_translation/models/nllb-200-3.3B-ct2/
@@ -72,7 +72,7 @@ def main():
     )
     parser.add_argument(
         "--quant", choices=list(CT2_REPOS.keys()), default="float16",
-        help="Quantization level (default: float16, ~6.5 GB)"
+        help="Quantization level: float16 (~6.5 GB, best quality) or int8_float16 (~3.5 GB, good)"
     )
     parser.add_argument(
         "--force", action="store_true",

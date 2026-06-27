@@ -1,34 +1,22 @@
-import google.generativeai as genai
+"""
+Batch transcription of Kabyle audio using Gemini.
+
+Usage:
+    export GEMINI_API_KEY='your-key-here'
+    python scripts/transcribe_kabyle_gemini.py -i audio -o outputs
+"""
+
+from shared.gemini_utils import GeminiProcessor
+import argparse
+import sys
 import os
-from google.generativeai.types import HarmCategory, HarmBlockThreshold
-import pathlib
 
-# Configure API key via environment variable (no error handling by request)
-genai.configure(api_key="AIzaSyDwhvG47lCNoHwpGDBEto3w3yuuO8dlWzc")
+# Add project root to path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 
-# Appliquer les paramètres de sécurité lors de l'instanciation du modèle
-model = genai.GenerativeModel(
-    'gemini-2.5-pro',
-)
-
-des = 'doc'
-
-i = 1
-k = len(os.listdir(des))
-
-
-for file in os.listdir(des):
-
-    print(fr'début: {file}')
-
-    # Path to your LOCAL audio file
-    filepath = pathlib.Path(fr'{os.path.join(des, file)}')
-
-    # Upload the audio file
-    uploaded_file = genai.upload_file(filepath)
-
-    SYSTEM_PROMPT = r"""
+# ─── Kabyle ASR System Prompt ───
+SYSTEM_PROMPT = r"""
 You are an expert transcription system specialized in Kabyle (Amazigh/Berber) language audio transcription. Transcribe ALL speech from this audio file with maximum accuracy, preserving the natural flow and structure.
 
 CRITICAL: Kabyle uses special diacritical characters that MUST be preserved exactly:
@@ -52,18 +40,38 @@ Output requirements:
 
 Transcribe the audio now:
 """
-#   gemini-2.5-pro
-#   gemini-2.5-flash
-    response = model.generate_content([
-        SYSTEM_PROMPT,
-        uploaded_file,
-    ])
-    with open(f"{file[:-4]}.md", 'w', encoding='utf-8') as fil:
-        fil.write(f'{response.text}\n')
-
-    print(fr'fin: {file}, {i}/{k}')
-
-    i += 1
 
 
-print('finnn')
+def main():
+    parser = argparse.ArgumentParser(
+        description="Batch transcription of Kabyle audio using Gemini")
+    parser.add_argument("--input-dir", "-i", default="audio",
+                        help="Directory containing audio files to transcribe (default: audio)")
+    parser.add_argument("--output-dir", "-o", default="outputs",
+                        help="Directory to save transcriptions (default: outputs)")
+    parser.add_argument("--model", "-m", default="gemini-2.5-pro",
+                        choices=["gemini-2.5-pro", "gemini-2.5-flash"],
+                        help="Gemini model version (default: gemini-2.5-pro)")
+    parser.add_argument("--extensions", "-e", nargs="+",
+                        default=[".mp3", ".wav", ".flac", ".m4a", ".ogg"],
+                        help="File extensions to process (default: .mp3 .wav .flac .m4a .ogg)")
+    args = parser.parse_args()
+
+    processor = GeminiProcessor(model_name=args.model)
+
+    print(f"🎧 ASR Pipeline — Kabyle Audio Transcription")
+    print(f"   Input:  {args.input_dir}")
+    print(f"   Output: {args.output_dir}")
+    print(f"   Model:  {args.model}")
+    print()
+
+    processor.process_directory(
+        input_dir=args.input_dir,
+        output_dir=args.output_dir,
+        system_prompt=SYSTEM_PROMPT,
+        extensions=tuple(ext.lower() for ext in args.extensions),
+    )
+
+
+if __name__ == "__main__":
+    main()

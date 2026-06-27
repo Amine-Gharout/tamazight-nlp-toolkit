@@ -14,7 +14,7 @@ outputs/         → Extracted text outputs organized by model
 | File | Description |
 |------|-------------|
 | `prompts/lrl_ocr_prompt.py` | Expert prompt with Kabyle grammar rules (y vs ɣ, diacritics) |
-| `scripts/ocr_kabyle_gemini.py` | Batch OCR using Gemini 2.5 Pro |
+| `scripts/ocr_kabyle_gemini.py` | Batch OCR using Gemini 2.5 Pro (uses `shared/gemini_utils.py`) |
 | `notebooks/google_ocr.ipynb` | OCR with Google Gemini (Flash & Pro) |
 | `notebooks/google_ocr_corrected.ipynb` | OCR with grammar-based post-correction |
 | `notebooks/qwen_ocr.ipynb` | OCR with Qwen-VL (7B & 72B) |

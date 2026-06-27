@@ -32,8 +32,8 @@ Large files (datasets and NLLB model) are **not stored in git**. Download them:
 bash scripts/download_data.sh
 
 # 2. Download NLLB-200-3.3B CTranslate2 model (~6.5 GB) from HuggingFace
-python scripts/download_nllb_model.py              # float16 (best quality)
-python scripts/download_nllb_model.py --quant int8  # int8 (less VRAM)
+python scripts/download_nllb_model.py                       # float16 (best quality)
+python scripts/download_nllb_model.py --quant int8_float16  # int8 (less VRAM)
 ```
 
 > **First-time setup:** If you're the repo owner, run `bash scripts/pack_data.sh` to create `raw_data.tar.gz`, upload it to Google Drive, then paste the file ID into `scripts/download_data.sh`.
