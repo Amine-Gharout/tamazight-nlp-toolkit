@@ -5,13 +5,12 @@
 # Usage:
 #   bash scripts/download_data.sh
 #
-# Downloads ~619 MB of raw parallel corpora (11 files) to 0_data/raw/.
-# Uses gdown to pull files from a shared Google Drive folder.
-# DVC-tracked so you can verify integrity with `dvc checkout`.
+# Downloads ~619 MB of raw parallel corpora to 0_data/raw/.
+# The data is on Google Drive as a single raw_data.tar.gz archive.
+# Uses gdown to download the file, then extracts it into 0_data/raw/.
 #
 # Prerequisites:
 #   pip install gdown    (installed automatically if missing)
-#   dvc                  (for verification, optional)
 #
 
 set -euo pipefail
@@ -22,29 +21,20 @@ DATA_DIR="$PROJECT_ROOT/0_data"
 RAW_DIR="$DATA_DIR/raw"
 
 # ══════════════════════════════════════════════════════════
-# CONFIG — Google Drive folder link
+# CONFIG — Google Drive file ID of raw_data.tar.gz
 # ──────────────────────────────────────────────────────────
-# Replace with your own link if hosting the data yourself.
-# The folder must be shared with "Anyone with the link" access.
+# The data is packaged as a single .tar.gz archive on Google Drive.
+# The file must be shared with "Anyone with the link" access.
 # ══════════════════════════════════════════════════════════
-GDRIVE_LINK="https://drive.google.com/drive/folders/1_FC0n1Jx6pzhVVnMLAVzO4rRxCdayrh-?usp=sharing"
-
-# ─── Extract folder ID from URL ───
-if [[ "$GDRIVE_LINK" =~ /folders/([^/?]+) ]]; then
-    GDRIVE_FOLDER_ID="${BASH_REMATCH[1]}"
-else
-    echo "❌ ERROR: Invalid Google Drive URL. Expected a folder link (containing /folders/...)"
-    echo "   Got: $GDRIVE_LINK"
-    exit 1
-fi
+GDRIVE_FILE_ID="1lpl1N3MXPk8ZrnIyAqb_WNLBx5CJ_kbH"
 
 echo "╔══════════════════════════════════════════════════════════╗"
 echo "║       chat_aqvayli — Raw Data Downloader               ║"
 echo "╚══════════════════════════════════════════════════════════╝"
 echo ""
-echo "  Google Drive folder: ${GDRIVE_FOLDER_ID}"
-echo "  Target directory:    ${RAW_DIR}"
-echo "  Expected size:       ~619 MB (11 files)"
+echo "  Google Drive file ID: ${GDRIVE_FILE_ID}"
+echo "  Target directory:     ${RAW_DIR}"
+echo "  Expected size:        ~619 MB (11 files in .tar.gz)"
 echo ""
 
 # ─── Skip if data already present ───
@@ -67,57 +57,51 @@ if ! python -c "import gdown" 2>/dev/null; then
     echo ""
 fi
 
-# ─── Download entire folder via gdown ───
-echo "⬇️  Downloading from Google Drive..."
+# ─── Download the .tar.gz file ───
+ARCHIVE="$DATA_DIR/raw_data.tar.gz"
+echo "⬇️  Downloading raw_data.tar.gz from Google Drive..."
 echo "   (This may take a few minutes depending on your connection)"
 echo ""
 
-mkdir -p "$RAW_DIR"
-
 python -c "
-import gdown, os, zipfile, tarfile, glob
+import gdown, os, sys
 
-folder_id = '$GDRIVE_FOLDER_ID'
-output_dir = '$RAW_DIR'
+file_id = '$GDRIVE_FILE_ID'
+output = '$ARCHIVE'
 
-files = gdown.download_folder(id=folder_id, output=output_dir, quiet=False)
+print(f'Downloading file {file_id}...')
+gdown.download(id=file_id, output=output, quiet=False)
 
-if not files:
+if not os.path.exists(output) or os.path.getsize(output) < 10000:
     print()
-    print('❌ ERROR: No files downloaded.')
+    print('❌ ERROR: Download failed or file too small.')
     print('   Possible reasons:')
-    print('   1. The folder is not shared publicly (set to \"Anyone with the link\")')
-    print('   2. The folder ID is wrong or the folder is empty')
+    print('   1. The file is not shared publicly (set to \"Anyone with the link\")')
+    print('   2. The file ID is wrong')
     print('   3. Google Drive rate-limited — wait a few minutes and retry')
-    exit(1)
+    sys.exit(1)
 
-print()
-print(f'✅ Downloaded {len(files)} files:')
-for f in sorted(files):
-    size_mb = os.path.getsize(f) / (1024 * 1024)
-    print(f'   {os.path.basename(f):40s} {size_mb:8.1f} MB')
-
-# Extract archives if any were downloaded
-for f in files:
-    if f.endswith('.zip'):
-        print(f'\n📦 Extracting {os.path.basename(f)}...')
-        with zipfile.ZipFile(f, 'r') as zf:
-            zf.extractall(output_dir)
-        os.remove(f)
-        print('   Done — zip removed.')
-        break
-    elif f.endswith(('.tar.gz', '.tgz')):
-        print(f'\n📦 Extracting {os.path.basename(f)}...')
-        with tarfile.open(f, 'r:gz') as tf:
-            tf.extractall(output_dir)
-        os.remove(f)
-        print('   Done — archive removed.')
-        break
+size_mb = os.path.getsize(output) / (1024 * 1024)
+print(f'✅ Downloaded: {size_mb:.1f} MB')
 "
+
+# ─── Extract the archive ───
+echo ""
+echo "📦 Extracting raw_data.tar.gz to ${RAW_DIR}/..."
+mkdir -p "$RAW_DIR"
+tar xzf "$ARCHIVE" -C "$DATA_DIR"
+rm "$ARCHIVE"
+echo "   Done — archive removed."
 
 # ─── Summary ───
 TOTAL=$(du -sh "$RAW_DIR" | cut -f1)
 FILE_COUNT=$(find "$RAW_DIR" -type f | wc -l)
+echo ""
+echo "╔══════════════════════════════════════════════════════════╗"
+echo "║  ✅ Download complete!                                  ║"
+echo "║  Target: ${RAW_DIR}"
+echo "║  Files:  ${FILE_COUNT} | Size: ${TOTAL}"
+echo "╚══════════════════════════════════════════════════════════╝"
 echo ""
 echo "╔══════════════════════════════════════════════════════════╗"
 echo "║  ✅ Download complete!                                  ║"
